@@ -19,6 +19,9 @@ jobs:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
       - name: Set git identity
         run: |-
-          docker run 
+          docker version
+          echo `pwd`
+          docker run --rm -u root -v `pwd`:/ws/:delegated  \
+          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."
     container:
       image: jsii/superchain
