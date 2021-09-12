@@ -1,5 +1,8 @@
 name: build
 on:
+  push:
+    branches:
+      - main
   pull_request: {}
   workflow_dispatch: {}
 jobs:
@@ -17,10 +20,11 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-      - name: Set git identity
+      - name: Run
         run: |-
+          set -x
           docker version
-          echo `pwd`
+          find .
           docker run --rm -u root -v `pwd`:/ws/:delegated  \
           public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."
     container:
