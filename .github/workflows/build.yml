@@ -6,7 +6,7 @@ on:
   pull_request: {}
   workflow_dispatch: {}
 jobs:
-  build:
+  build-in-jsii:
     runs-on: ubuntu-latest
     permissions:
       checks: write
@@ -25,7 +25,34 @@ jobs:
           set -x
           docker version
           find .
-          docker run --rm -u root -v `pwd`:/ws/:delegated  \
+          echo using delegated
+          docker run --rm -u root -v $PWD:/ws/:delegated  \
+          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."
+
+          echo without delegated
+          docker run --rm -u root -v $PWD:/ws/  \
           public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."
     container:
       image: jsii/superchain
+  
+  build-on-host:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: write
+      actions: write
+    env:
+      CI: "true"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+      - name: Run
+        run: |-
+          set -x
+          docker version
+          find .
+          docker run --rm -u root -v $PWD:/ws/:delegated  \
+          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."
