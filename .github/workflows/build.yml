@@ -27,11 +27,11 @@ jobs:
           find .
           echo using delegated
           docker run --rm -u root -v $PWD:/ws/:delegated  \
-          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."
+          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."    ### 1. EMPTY IN /ws
 
           echo without delegated
           docker run --rm -u root -v $PWD:/ws/  \
-          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."
+          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."    ### 2. EMPTY IN /ws
     container:
       image: jsii/superchain
   
@@ -55,4 +55,4 @@ jobs:
           docker version
           find .
           docker run --rm -u root -v $PWD:/ws/:delegated  \
-          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."
+          public.ecr.aws/sam/build-nodejs12.x bash -xc "cd /ws/ && find ."    ### 3. /ws IS NOT EMPTY
